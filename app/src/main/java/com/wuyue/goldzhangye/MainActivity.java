@@ -2,18 +2,22 @@ package com.wuyue.goldzhangye;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
 import com.jaeger.library.StatusBarUtil;
 import com.wuyue.goldzhangye.base.BaseActivity;
 import com.wuyue.goldzhangye.utils.ThemeUtils;
 import com.wuyue.goldzhangye.viewimpl.film.FilmFragment;
+import com.wuyue.goldzhangye.viewimpl.music.MusicFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +55,11 @@ public class MainActivity extends BaseActivity {
 
 
     private FilmFragment filmFragment;
-    private List<FilmFragment> listFragment;
+    private MusicFragment musicFragment;
+    private List<Fragment> listFragment;
+
+    private int currentFragment;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +75,8 @@ public class MainActivity extends BaseActivity {
         initView();
         //初始化Fragment
         initViewpagerAndFragment();
+        initListener();
+
     }
 
     private void initView(){
@@ -91,13 +101,55 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    private void initListener(){
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                switch (checkedId) {
+                    case R.id.rb_home:
+                        currentFragment = 0;
+                        break;
+                    case R.id.rb_dynamic:
+                        currentFragment = 1;
+                        break;
+                    case R.id.rb_message:
+                        currentFragment=2;
+                        break;
+                }
+                viewpager.setCurrentItem(currentFragment, false);
+
+            }
+        });
+
+        viewpager.setAdapter(new FragmentPagerAdapter(
+                getSupportFragmentManager()) {
+            @Override
+            public int getCount() {
+                return listFragment.size();
+            }
+
+            @Override
+            public Fragment getItem(int arg0) {
+                return listFragment.get(arg0);
+            }
+
+            @Override
+            public void destroyItem(ViewGroup container, int position,
+                                    Object object) {
+                super.destroyItem(container, position, object);
+            }
+
+        });
+    }
+
+
     private void initViewpagerAndFragment(){
-        filmFragment=FilmFragment.newInstance();
+        musicFragment= MusicFragment.newInstance();
         listFragment=new ArrayList<>();
-        listFragment.add(filmFragment);
-        listFragment.add(filmFragment);
-        listFragment.add(filmFragment);
-        viewpager.setOffscreenPageLimit(3);
+        listFragment.add(musicFragment);
+        viewpager.setOffscreenPageLimit(1);
         viewpager.setOnPageChangeListener(onPageChangeListener);
     }
 
@@ -162,4 +214,5 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
 }
