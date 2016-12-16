@@ -8,10 +8,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.wuyue.goldzhangye.MainActivity;
 import com.wuyue.goldzhangye.R;
 import com.wuyue.goldzhangye.base.BaseActivity;
+import com.wuyue.goldzhangye.ui.A1_HomeActivity;
+import com.wuyue.yylibrary.LogUtil;
 
 import java.util.Observable;
 import java.util.Random;
@@ -19,8 +22,11 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bmob.v3.BmobUser;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by wuyue on 2016/11/18.
@@ -97,10 +103,19 @@ public class EntryActivity extends BaseActivity{
             @Override
             public void onAnimationEnd(Animator animation)
             {
-
-                startActivity(new Intent(EntryActivity.this, MainActivity.class));
-                EntryActivity.this.finish();
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                BmobUser bmobUser = BmobUser.getCurrentUser();
+                if(bmobUser != null){
+                    // 允许用户使用应用
+                    startActivity(new Intent(EntryActivity.this, MainActivity.class));
+                    EntryActivity.this.finish();
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                }else{
+                    //缓存用户对象为空时， 可打开用户注册,登录界面…
+                    startActivity(new Intent(EntryActivity.this, GuideActivity.class));
+                    EntryActivity.this.finish();
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                }
+                finish();
             }
         });
     }

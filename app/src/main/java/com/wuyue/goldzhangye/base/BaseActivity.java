@@ -11,8 +11,11 @@ import android.widget.Toast;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.wuyue.goldzhangye.R;
+import com.wuyue.goldzhangye.utils.SysConfig;
 import com.wuyue.goldzhangye.utils.ThemeUtils;
 import com.wuyue.yylibrary.T;
+
+import butterknife.ButterKnife;
 
 
 /**
@@ -20,9 +23,15 @@ import com.wuyue.yylibrary.T;
  */
 
 public class BaseActivity extends BaseFragmentActivity implements IBaseView{
+
+
+    public SysConfig sysConfig;
+    public Context mContext;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sysConfig = SysConfig.getSysconfig(getApplicationContext());
+        mContext = getApplicationContext();
     }
 
 
@@ -102,6 +111,12 @@ public class BaseActivity extends BaseFragmentActivity implements IBaseView{
             winParams.flags &= ~bits;
         }
         win.setAttributes(winParams);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 
     @Override
